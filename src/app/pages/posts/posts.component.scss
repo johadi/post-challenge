@@ -1,0 +1,20 @@
+.container {
+  width: 70vw;
+  border: 1px solid gray;
+  margin: auto;
+
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    height: 2rem;
+    padding: 20px;
+  }
+  .posts-section {
+    padding: 30px;
+    border-bottom: solid 2px gray;
+  }
+  .post-title-section {
+    display: flex;
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,31 @@
+<section [formGroup]="commentForm" class="container">
+  <header class="post-header">
+    <button>Reload</button>
+    <div>
+      <span>Likes: 5 </span> <span>Comments: 2</span>
+    </div>
+  </header>
+
+  <section formArrayName="comments" *ngFor="let post of posts; let i=index" class="posts-section">
+    <div class="post-title-section">
+      <div class="title-text">{{post.title}}</div>
+      <div class="title-like"> 3 <button>Like</button></div>
+    </div>
+    <div class="post-body">
+      <p>{{post.description}}</p>
+
+      <div class="post-comments">
+        <p>Comments</p>
+        <div [formGroupName]="i" class="add-comment">
+          <textarea formControlName="text" name="comment" cols="100" rows="5" placeholder="Add comment"></textarea>
+        </div>
+        <div class="all-comments">
+          <div *ngFor="let comment of getPostComments(post.id) | async" class="single-comment">
+            <p>{{comment.text}}</p>
+            <span>{{comment.date | date}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
