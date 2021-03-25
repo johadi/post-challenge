@@ -2,18 +2,18 @@
   <header class="post-header">
     <button>Reload</button>
     <div>
-      <span>Likes: 5 </span> <span>Comments: 2</span>
+      <span>Likes: {{userLikes | async}} </span> <span>Comments: {{userComments | async}}</span>
     </div>
   </header>
 
-  <section formArrayName="comments" *ngFor="let post of posts; let i=index" class="posts-section">
+  <section formArrayName="comments" *ngFor="let post of posts|async; let i=index" class="posts-section">
     <div class="post-title-section">
       <div class="title-text">{{post.title}}</div>
-      <div class="title-like"> 3 <button>Like</button></div>
+      <div class="title-like"> {{post?.likes?.length}} <button>Like</button></div>
     </div>
     <div class="post-body">
       <p>{{post.description}}</p>
-
+      <hr>
       <div class="post-comments">
         <p>Comments</p>
         <div [formGroupName]="i" class="add-comment">

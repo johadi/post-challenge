@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
 
 import {POSTS} from '../mock-data';
@@ -16,10 +16,17 @@ export class PostService {
   posts: PostI[] = POSTS;
   $posts = new BehaviorSubject<PostI[]>(POSTS);
 
-  constructor(private commentService: CommentService) { }
+  constructor(private commentService: CommentService) {
+  }
 
-  getPosts(): PostI[] {
-    return this.posts;
+  getPosts(): Observable<PostI[]> {
+    return this.$posts.asObservable();
+  }
+
+  addPost(post: PostI): void {
+    this.posts.push(post);
+
+    this.$posts.next(this.posts);
   }
 
   getPostComments(postId: number): Observable<CommentI[]> {

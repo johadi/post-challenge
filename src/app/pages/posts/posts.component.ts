@@ -5,6 +5,7 @@ import {CommentI} from '../../shared/interfaces/comment.interface';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {CommentService} from '../../shared/services/comment.service';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
   selector: 'app-posts',
@@ -13,11 +14,13 @@ import {CommentService} from '../../shared/services/comment.service';
 })
 export class PostsComponent implements OnInit {
   commentForm: FormGroup;
+  currentUserId = 1;
 
   constructor(
     private postService: PostService,
     private formBuilder: FormBuilder,
-    private commentService: CommentService
+    private commentService: CommentService,
+    private userService: UserService
   ) {
     this.commentForm = this.formBuilder.group({
       comments: this.formBuilder.array([])
@@ -29,25 +32,27 @@ export class PostsComponent implements OnInit {
   }
 
   addCommentForm(): void {
-    this.posts.forEach(post => {
-      const control = this.formBuilder.group({
-        text: ['', [Validators.required]],
-        postId: [post.id],
-        userId: [post.userId]
-      }, {updateOn: 'blur'});
+    this.posts.subscribe((posts) => {
+      posts.forEach(post => {
+        const control = this.formBuilder.group({
+          text: ['', [Validators.required]],
+          postId: [post.id],
+          userId: [post.userId]
+        }, {updateOn: 'blur'});
 
-      control.statusChanges
-        .subscribe((status) => {
-          if (status === 'VALID') {
-            this.commentService.setComment(control.value);
-          }
-        });
+        control.statusChanges
+          .subscribe((status) => {
+            if (status === 'VALID') {
+              this.commentService.setComment(control.value);
+            }
+          });
 
-      (this.commentForm.get('comments') as FormArray).push(control);
+        (this.commentForm.get('comments') as FormArray).push(control);
+      });
     });
   }
 
-  get posts(): PostI[] {
+  get posts(): Observable<PostI[]> {
     return this.postService.getPosts();
   }
 
@@ -55,4 +60,11 @@ export class PostsComponent implements OnInit {
     return this.postService.getPostComments(postId);
   }
 
+  get userLikes(): Observable<number> {
+    return this.userService.getUserLikes(this.currentUserId);
+  }
+
+  get userComments(): Observable<number> {
+    return this.userService.getUserComments(this.currentUserId);
+  }
 }
